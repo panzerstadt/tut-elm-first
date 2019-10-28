@@ -1,0 +1,15 @@
+{
+  "name": "tut-elm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "elm reactor",
+    "build": "elm make src/Main.elm",
+    "deploy:now": "rm -rf build && yarn build && mkdir build && cp index.html build/index.html && cd build && now",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

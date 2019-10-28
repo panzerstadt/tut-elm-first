@@ -1,69 +1,86 @@
 module Main exposing (main)
--- Press buttons to increment and decrement a counter.
---
--- Read how it works:
---   https://guide.elm-lang.org/architecture/buttons.html
---
-
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
-import Components.Clock
+import Html exposing (Attribute, Html, br, button, div, input, span, text)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onClick, onInput)
 
 
--- MAIN
+
+-- Main
 
 
 main =
-  Browser.sandbox { init = init, update = update, view = view }
+    Browser.sandbox { init = init, update = update, view = view }
 
 
 
--- MODEL
--- model == model of the module's "world"
+-- Model
 
-type alias Model = Int
+
+type alias Model =
+    { content : String }
 
 
 init : Model
 init =
-  0
+    { content = "" }
 
 
 
--- UPDATE
+-- Update
 
 
 type Msg
-  = Increment
-  | Decrement
-  | Reset
+    = Change String
+    | Clear
 
 
 update : Msg -> Model -> Model
 update msg model =
-  case msg of
-    Increment ->
-      model + 1
+    case msg of
+        Change newContent ->
+            { model | content = newContent }
 
-    Decrement ->
-      model - 1
-    
-    Reset ->
-      0
+        Clear ->
+            { model | content = "" }
 
 
 
--- VIEW
+-- View
 
 
 view : Model -> Html Msg
 view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    , button [ onClick Reset ] [ text "reset" ]
-    ]
+    div [ class "container" ]
+        [ Html.node "style" [] [ text css ]
+        , div []
+            [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
+            , button [ onClick Clear ] [ text "clear" ]
+            ]
+        , br [] []
+        , div []
+            [ span [] [ text (String.reverse model.content) ]
+            , if String.length model.content > 1 then
+                span [] [ text (" : " ++ String.fromInt (String.length model.content) ++ " words") ]
 
+              else
+                span [] [ text "try typing something above!" ]
+            ]
+        ]
+
+
+
+-- https://ellie-app.com/67vmrPtcygwa1
+
+
+css =
+    """
+    .container {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    """
